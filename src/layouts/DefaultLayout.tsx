@@ -20,14 +20,15 @@ function DefaultLayout(prop: Props) {
                     display:"flex", justifyContent:"space-between", alignItems:"center", color:"#fff"
                 }}>
                     <Space direction="horizontal">
-                        <h2>{APP1.name}</h2>
-                        <span style={{fontSize:14, color:"#aabedc"}}>Trung tâm đối tác liên kết</span>
+                        <h2 style={{cursor:"pointer"}} onClick={()=>navigate('/')}>{APP1.name}</h2>
+                        <span onClick={()=>navigate('/')} style={{fontSize:14, color:"#aabedc", cursor:"pointer"}}>Trung tâm đối tác liên kết</span>
                     </Space>
                     <Space>
                         <Button type="default" style={{color:COLORS.BUTTON,fontWeight:500, padding:18}}
                         onClick={()=>navigate('/manage/register')}
                         >Đăng ký</Button>
-                        <Button type="primary" style={{color:"#fff",fontWeight:600, padding:18, backgroundColor:COLORS.BUTTON}}>Đăng nhập</Button>
+                        <Button type="primary" style={{color:"#fff",fontWeight:600, padding:18, backgroundColor:COLORS.BUTTON}}
+                        onClick={()=>navigate('/manage/sigin-manage')}>Đăng nhập</Button>
                     </Space>
                 </Space>
             </Layout.Header>

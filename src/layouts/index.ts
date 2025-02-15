@@ -1,2 +1,4 @@
 import DefaultLayout from "./DefaultLayout";
-export default DefaultLayout;
+import HomeLayout from "./HomeLayout";
+import RegisterHotelLayout from "./RegisterHotelLayout";
+export {DefaultLayout, HomeLayout, RegisterHotelLayout} ;

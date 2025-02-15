@@ -122,3 +122,19 @@ src/
 ## cài thư viện
 react-router-dom
 antd
+
+## cài redux toolkit
+@reduxjs/toolkit
+react-redux
+
+## viết tắt
+Mn - manager: Quản lý khách sạn
+
+## bản đồ tải bản v4 để đảm bảo tương thích
+react-leaflet@4 leaflet
+
+## thông tin các quốc gia
+world-countries
+
+## giải mã JWT
+jwt-decode
