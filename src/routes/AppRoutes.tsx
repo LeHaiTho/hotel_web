@@ -14,7 +14,7 @@ import {
   BathRoom,
   RoomAmenities,
   NameRoom,
-  ImageRoom
+  ImageRoom, Payment
 } from '../pages';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
@@ -65,7 +65,7 @@ const AppRoutes = () => {
                 <Route path='register-hotel/setup-room/room-amenities/:idhotel' element={<RegisterHotelLayout><RoomAmenities /></RegisterHotelLayout>} />
                 <Route path='register-hotel/setup-room/name-room/:idhotel' element={<RegisterHotelLayout><NameRoom /></RegisterHotelLayout>} />
                 <Route path='register-hotel/setup-room/image-room/:idhotel' element={<RegisterHotelLayout><ImageRoom /></RegisterHotelLayout>} />
-                
+                <Route path='register-hotel/setup-room/payment/:idhotel' element={<RegisterHotelLayout><Payment /></RegisterHotelLayout>} /> 
             </Route>
 
           </Routes>

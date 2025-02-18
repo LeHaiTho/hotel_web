@@ -118,7 +118,8 @@ function MultiStepHotel() {
                         <span style={{fontSize:12, color:"#595959"}}>Nhập thông tin thanh toán và hóa đơn trước khi mở để nhận đặt phòng.</span>
                     </Space>
                 </Space>
-                <Button type="text">Thêm các thông tin cuối cùng</Button>
+                <Button onClick={()=>{navigate(`/manage/register-hotel/setup-room/payment/${id}?token=${token}`)}}
+                type="text">Thêm các thông tin cuối cùng</Button>
            </Space>
         </Space>
      );

@@ -37,9 +37,9 @@ function RoomAmenities() {
     useEffect(()=>{
         if(formStateRoom){
             form.setFieldsValue({
-                doandichvu: formStateRoom?.doandichvu.split(",") || [],
-                khonggian: formStateRoom?.khonggian.split(",") || [],
-                tiennghichung: formStateRoom?.tiennghichung.split(",") || []
+                doandichvu: formStateRoom?.doandichvu?.split(",") || [],
+                khonggian: formStateRoom?.khonggian?.split(",") || [],
+                tiennghichung: formStateRoom?.tiennghichung?.split(",") || []
             })
         }
     },[form])

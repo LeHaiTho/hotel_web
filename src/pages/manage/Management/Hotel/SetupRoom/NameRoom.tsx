@@ -80,13 +80,13 @@ function NameRoom() {
         if(formStateRoom){
             form.setFieldsValue({
                 nameroom: formStateRoom?.nameroom || "Phòng giường đôi",
-                sotien: formatCurrency(getFullValue(formStateRoom?.sotien,85)).split('₫')[0] || "",
+                sotien: formStateRoom?.sotien ? formatCurrency(getFullValue(formStateRoom?.sotien,85)).split('₫')[0] : "",
             })
             if(formStateRoom.sotien){
                 setTienNhan(formStateRoom?.sotien)
             }
         }
-    },[])
+    },[form])
     return ( 
         <Space direction="vertical" style={{padding:"40px 200px 0px 200px"}}>
             {/* Thanh tiến trình  */}
