@@ -2,14 +2,34 @@ import { Button, Col, Divider, Form, Input, Radio, Rate, Row, Space } from "antd
 import { useNavigate } from "react-router-dom";
 import {LeftOutlined } from '@ant-design/icons';
 import { COLORS } from "../../../../../constants/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { updateForm } from "../../../../../redux/Slice/Hotels_Mn/formRegisterHotelMnSlice";
+import { selectFormRegisterHotelMn } from "../../../../../redux/selector";
+import { useEffect } from "react";
+import { useForm } from "antd/es/form/Form";
 
 function NameHotel() {
     const navigate = useNavigate();
     // lấy token lên để tránh copy link vào trang 
     const token = localStorage.getItem('token');
-    const onFinish = () => {
+    const [form] = useForm();
+    const formStateHotel = useSelector(selectFormRegisterHotelMn)
+    const dispatch = useDispatch();
+    const onFinish = (values:any) => {
+        dispatch(updateForm({
+            name: values?.namehotel,
+            rate: values?.rate
+        }));
         navigate(`/manage/register-hotel/setup-hotel/amenities-hotel?token=${token}`);
     }
+    useEffect(()=>{
+        if(formStateHotel){
+            form.setFieldsValue({
+                namehotel: formStateHotel?.name,
+                rate: formStateHotel?.rate || 0
+            })
+        }
+    },[form])
     return ( 
         <Space direction="vertical" style={{padding:"60px 200px 60px 200px"}}>
             {/* Thanh tiến trình  */}
@@ -42,7 +62,7 @@ function NameHotel() {
             <h1 style={{fontSize:35}}>Cho chúng tôi biết thêm về hotel của Quý vị</h1>
             <Space direction="vertical" style={{backgroundColor:"#fff", padding:20}}>
                 <h3>Khách sạn của Quý vị tên gì?</h3>
-                <Form layout="vertical" onFinish={onFinish}>
+                <Form form={form} layout="vertical" onFinish={onFinish}>
                     <Form.Item label={<span style={{fontWeight:500}}>Tên chỗ nghỉ</span>} name={"namehotel"} rules={[
                         {required:true, message: "Tên chỗ nghỉ của Quý vị là gì?"}
                     ]}>
@@ -51,22 +71,22 @@ function NameHotel() {
                     <span style={{color:"gray"}}>Tên này sẽ được hiển thị tới khách khi họ tìm kiếm chỗ nghỉ.</span>
                     <Divider />
                      {/* Xếp hạng khách sạn */}
-                    <Form.Item name={"ratehotel"} label={<span style={{fontWeight:500}}>Khách sạn của Quý vị được xếp hạng mấy sao?</span>}>
-                        <Radio.Group defaultValue="none">
+                    <Form.Item initialValue={0} name={"rate"} label={<span style={{fontWeight:500}}>Khách sạn của Quý vị được xếp hạng mấy sao?</span>}>
+                        <Radio.Group>
                             <Space direction="vertical">
-                                <Radio value="none">Không áp dụng</Radio>
-                                <Radio value="1">1 sao <Rate value={1} count={1} disabled /></Radio>
-                                <Radio value="2">2 sao <Rate value={2} count={2} disabled /></Radio>
-                                <Radio value="3">3 sao <Rate value={3} count={3} disabled /></Radio>
-                                <Radio value="4">4 sao <Rate value={4} count={4} disabled /></Radio>
-                                <Radio value="5">5 sao <Rate value={5} count={5} disabled /></Radio>
+                                <Radio value={0}>Không áp dụng</Radio>
+                                <Radio value={1}>1 sao <Rate value={1} count={1} disabled /></Radio>
+                                <Radio value={2}>2 sao <Rate value={2} count={2} disabled /></Radio>
+                                <Radio value={3}>3 sao <Rate value={3} count={3} disabled /></Radio>
+                                <Radio value={4}>4 sao <Rate value={4} count={4} disabled /></Radio>
+                                <Radio value={5}>5 sao <Rate value={5} count={5} disabled /></Radio>
                             </Space>
                         </Radio.Group>
                     </Form.Item>
                     <Divider />
                     {/* Công ty quản lý khách sạn */}
-                    <Form.Item name={"managehotel"} label={<span style={{fontWeight:500}}>Quý vị có phải là công ty quản lý chỗ nghỉ hay thuộc tập đoàn hoặc chuỗi khách sạn không?</span>}>
-                        <Radio.Group defaultValue="no">
+                    <Form.Item initialValue={"no"} name={"managehotel"} label={<span style={{fontWeight:500}}>Quý vị có phải là công ty quản lý chỗ nghỉ hay thuộc tập đoàn hoặc chuỗi khách sạn không?</span>}>
+                        <Radio.Group>
                             <Radio value="yes">Có</Radio>
                             <Radio value="no">Không</Radio>
                         </Radio.Group>

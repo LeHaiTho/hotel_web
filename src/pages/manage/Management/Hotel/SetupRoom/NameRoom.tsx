@@ -2,14 +2,33 @@ import { Button, Col, Divider, Form, Row, Select, Space } from "antd";
 import { CurrencyInput } from "../../../../component";
 import { useForm } from "antd/es/form/Form";
 import {CheckOutlined, LeftOutlined } from '@ant-design/icons';
-import { useNavigate } from "react-router-dom";
-import { APP1 } from "../../../../../constants/constants";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { APP1, baseUrl, COLORS } from "../../../../../constants/constants";
+import { useEffect, useState } from "react";
+import { formatCurrency } from "../../../../../constants/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { selectFormRegisterRoomMn } from "../../../../../redux/selector";
+import { resetForm, updateForm } from "../../../../../redux/Slice/Hotels_Mn/formRegisterRoomMnSlice";
+import axios from "axios";
 const {Option} = Select;
 
 function NameRoom() {
     const [form] = useForm();
+    const {idhotel} = useParams();
     const navigate = useNavigate();
+    const [tiennhan, setTienNhan] = useState<any>();//tiền nhận được sau khi giảm 15%
+    // lấy token lên để tránh copy link vào trang 
+    const token = localStorage.getItem('token');
+    const dispatch = useDispatch();
+    const formStateRoom = useSelector(selectFormRegisterRoomMn);
+    const toPay = (money: string): number => {
+        const moneyNumber =  money.replace(/\D/g, "");
+        return Math.round((Number(moneyNumber) * 85 / 100));
+    }
+    //tính giá trị gốc
+    const getFullValue = (currentValue:number, percent:number) : number => {
+        return (currentValue / percent) * 100;
+      };
     const nameroom = ["Phòng Giường Đôi", "Phòng Giường Đôi Có Phòng Tắm Riêng", "Phòng Business 1 Giường Đôi với Quyền sử dụng Phòng tập thể dục.",
         "Phòng Có Giường Cỡ Queen Nhìn Ra Hồ Bơi ", "Phòng Deluxe Giường Đôi" , "Phòng Tiêu Chuẩn Có Giường Cỡ King",
         "Phòng Có Giường Cỡ King - Phù Hợp Cho Khách Khuyết Tật", "Phòng Có Giường Cỡ King", "Phòng Có Giường Cỡ King Nhìn Ra Biển",
@@ -34,11 +53,57 @@ function NameRoom() {
         "Phòng Tiêu Chuẩn Giường Đôi Có Quạt Máy","Phòng Tiêu Chuẩn Giường Đôi Với Phòng Tắm Chung","Phòng có giường cỡ King với Bồn tắm Spa",
         "Phòng có giường cỡ King nhìn ra cảnh núi non"
     ]
-    const onFinish = () => {
-       
+    const onFinish = async (values: any) => {
+        console.log(values);
+        const payload = {
+            nameroom: values?.nameroom,
+            sotien: toPay(values?.sotien),
+        }
+        dispatch(updateForm(payload))
+        const payloads = {
+            ...formStateRoom,
+            ...payload
+        }
+        try{
+            const res = await axios.post(`${baseUrl}hotel-properties/room/create/${idhotel}`,payloads,{
+                headers: {Authorization: `Bearer ${token}`},
+            })
+            if(res.status===200){
+                 dispatch(resetForm());
+                 navigate(`/manage/register-hotel/setup-hotel/multi-step-hotel/${idhotel}?token=${token}`)
+            }
+        }catch(err){
+            console.log(err);
+        }
     }
+    useEffect(()=>{
+        if(formStateRoom){
+            form.setFieldsValue({
+                nameroom: formStateRoom?.nameroom || "Phòng giường đôi",
+                sotien: formatCurrency(getFullValue(formStateRoom?.sotien,85)).split('₫')[0] || "",
+            })
+            if(formStateRoom.sotien){
+                setTienNhan(formStateRoom?.sotien)
+            }
+        }
+    },[])
     return ( 
-        <Space direction="vertical" style={{padding:"60px 200px 60px 200px"}}>
+        <Space direction="vertical" style={{padding:"40px 200px 0px 200px"}}>
+            {/* Thanh tiến trình  */}
+                                    <Row style={{position:"fixed", top:64, right:0, left:0, display:"flex", zIndex:2}}>
+                                        <Col span={6}>
+                                            <div style={{height:8, backgroundColor:COLORS.BUTTON, width:"98%"}}></div>
+                                        </Col>
+                                        <Col span={6}>
+                                            <div style={{height:8, backgroundColor:COLORS.BUTTON, width:"98%"}}></div>
+                                        </Col>
+                                        <Col span={6}>
+                                            <div style={{height:8, backgroundColor:COLORS.BUTTON, width:"98%"}}></div>
+                                        </Col>
+                                        <Col span={6}>
+                                            <div style={{height:8, backgroundColor:COLORS.BUTTON, width:"100%"}}></div>
+                                        </Col>
+                                    </Row>
             <h1 style={{fontSize:35}}>Tên của phòng này là gì?</h1>
             <Space direction="vertical" style={{width:750, backgroundColor:"#fff", padding:15}}>
                 <span>Đây là tên mà khách sẽ thấy trên trang chỗ nghỉ của Quý vị. Hãy chọn tên miêu tả phòng này chính xác nhất.</span>
@@ -54,9 +119,9 @@ function NameRoom() {
                     </Form.Item>
                     <h3 style={{marginBottom:10}}>Thiết lập giá mỗi đêm cho phòng này</h3>
                     <span style={{fontWeight:600, marginBottom:10}}>Quý vị muốn thu bao nhiêu tiền mỗi đêm?</span>
-                    <Form.Item name={"sotien"} label={<span>Số tiền khách trả</span>}>
+                    <Form.Item initialValue={""} name={"sotien"} rules={[{required: true, message:"Nhập số tiền phòng của Quý vị."}]} label={<span>Số tiền khách trả</span>}>
                             <CurrencyInput styleprop={{width:"100%"}}  value={form.getFieldValue("sotien")} // Lấy giá trị từ Form
-                                onchange={(value) => form.setFieldsValue({ sotien: value })} />
+                                onchange={(value) => {form.setFieldsValue({ sotien: value }); setTienNhan(toPay(value));}} />
                     </Form.Item>
                     <Space style={{margin:"0px 10px 10px 10px"}} size={1} direction="vertical">
                             <span>Bao gồm các loại thuế, phí và hoa hồng</span>
@@ -65,7 +130,9 @@ function NameRoom() {
                             <span style={{marginLeft:30}}><CheckOutlined style={{color:"#008234"}} /> Tiết kiệm thời gian với đặt phòng được xác nhận tự động</span>
                             <span style={{marginLeft:30}}><CheckOutlined style={{color:"#008234"}} /> Chúng tôi sẽ quảng bá chỗ nghỉ của Quý vị trên Google</span>
                             <Divider style={{margin:"10px 0px 10px 0px"}} />
-                            <span>VND <span style={{fontWeight:500}}>{form.getFieldValue("sotien")}</span> Doanh thu của Quý vị (bao gồm thuế)</span>
+                            {
+                                (tiennhan && tiennhan!==0) ? <span>VND <span style={{fontWeight:500}}>{formatCurrency(tiennhan).split('₫')[0]}</span> Doanh thu của Quý vị (bao gồm thuế)</span> : <div></div>
+                            }
                     </Space>
                     <Form.Item>
                         <Row>

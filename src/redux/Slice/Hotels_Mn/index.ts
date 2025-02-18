@@ -1,3 +1,3 @@
 import formRegisterHotelMnSlice from "./formRegisterHotelMnSlice"
-
-export {formRegisterHotelMnSlice}
+import formRegisterRoomMnSlice from "./formRegisterRoomMnSlice"
+export {formRegisterHotelMnSlice, formRegisterRoomMnSlice}

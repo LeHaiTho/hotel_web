@@ -5,10 +5,16 @@ import "./StyleHotel.css"
 import { useEffect, useState } from "react";
 import {useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { updateForm } from "../../../../redux/Slice/Hotels_Mn/formRegisterHotelMnSlice";
+import { selectFormRegisterHotelMn } from "../../../../redux/selector";
+
 function TypeHotel_P2() {
-    const [selectitemid, setSelectitemid] = useState(null);
+    const formStateHotel = useSelector(selectFormRegisterHotelMn)
+    const [selectitemid, setSelectitemid] = useState(formStateHotel?.type || null);
     const [typehotel, setTypehotel] = useState<any[]>([]);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     // lấy token lên để tránh copy link vào trang 
     const token = localStorage.getItem('token');
     const getAPITypeHotel = async () => {
@@ -24,6 +30,13 @@ function TypeHotel_P2() {
     useEffect(()=>{
         getAPITypeHotel();
     },[])
+    const handleSubmit = () => {
+        // lưu vào state form Redux 
+        if(selectitemid!=null){
+            dispatch(updateForm({type: selectitemid}));
+            navigate(`/manage/register-hotel/type-part-3?token=${token}`)
+        }
+    }
     return (  
         <Space direction="vertical" style={{display:"flex",padding:"80px 150px 80px 200px",backgroundColor:"#f9f9fa"}}>
             {/* Thanh tiến trình  */}
@@ -268,7 +281,7 @@ function TypeHotel_P2() {
             </Space>
             <Row gutter={10} style={{marginTop:20}}>
                 <Col span={2}><Button onClick={()=>{navigate(-1)}} icon={<LeftOutlined />} style={{width:"100%", padding:18}}></Button></Col>
-                <Col span={22}><Button disabled={selectitemid===null} onClick={()=>{navigate(`/manage/register-hotel/type-part-3?token=${token}`)}} type="primary" style={{width:"100%", padding:18}}>Tiếp tục</Button></Col>
+                <Col span={22}><Button disabled={selectitemid===null} onClick={()=>{handleSubmit()}} type="primary" style={{width:"100%", padding:18}}>Tiếp tục</Button></Col>
             </Row>
         </Space>
     );

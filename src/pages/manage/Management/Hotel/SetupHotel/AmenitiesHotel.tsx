@@ -4,14 +4,20 @@ import {LeftOutlined } from '@ant-design/icons';
 import { useEffect, useState } from "react";
 import { baseUrl, COLORS } from "../../../../../constants/constants";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { updateForm } from "../../../../../redux/Slice/Hotels_Mn/formRegisterHotelMnSlice";
+import { selectFormRegisterHotelMn } from "../../../../../redux/selector";
 
 function AmenitiesHotel() {
     const [selectFacilities, setSelectFacilities] = useState<any[]>([]);
     const [facilities, setFacilities] = useState<any[]>([]);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     // lấy token lên để tránh copy link vào trang 
     const token = localStorage.getItem('token');
     const isButtonDisabled = selectFacilities.length ===0;
+
+    const formStateHotel = useSelector(selectFormRegisterHotelMn);
     //lấy data tiện nghi
     const getAPI_AmenitiesHotle = async () => {
         try{
@@ -25,9 +31,21 @@ function AmenitiesHotel() {
             console.log(err);
         }
     }
-
+    const handleSubmit = () => {
+        if(selectFacilities.length > 0){
+            const value = selectFacilities.join(',');
+            dispatch(updateForm({arrAmenities: value}));
+            navigate(`/manage/register-hotel/setup-hotel/check-in-out-hotel?token=${token}`)
+        }
+    }
     useEffect(()=>{
         getAPI_AmenitiesHotle();
+        if(formStateHotel && formStateHotel.arrAmenities){
+            const value = formStateHotel.arrAmenities.split(',') || [];
+            // const value_number = value.map((item:any)=>Number(item));
+            //lấy dữ liệu từ form cũ chuống nếu có
+            setSelectFacilities(value);
+        }
     },[])
     // const facilities = [
     //     "Nhà hàng", "Dịch vụ phòng", "Quầy bar", "Lễ tân 24 giờ", "Phòng xông hơi",
@@ -73,7 +91,7 @@ function AmenitiesHotel() {
                 ))}
                  <Row gutter={10} style={{marginTop:20}}>
                     <Col span={4}><Button onClick={()=>{navigate(-1)}} icon={<LeftOutlined />} style={{width:"100%", padding:18}}></Button></Col>
-                    <Col span={20}><Button onClick={()=>{navigate(`/manage/register-hotel/setup-hotel/check-in-out-hotel?token=${token}`)}}
+                    <Col span={20}><Button onClick={()=>{handleSubmit()}}
                     disabled={isButtonDisabled}
                     type="primary" style={{width:"100%", padding:18}}>Tiếp tục</Button></Col>
                 </Row>

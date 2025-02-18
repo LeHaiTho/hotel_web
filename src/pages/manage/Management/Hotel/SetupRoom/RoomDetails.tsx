@@ -3,21 +3,92 @@ import { IncreaseDecrease } from "../../../../component";
 import { ReactSVG } from 'react-svg';
 import {LeftOutlined } from '@ant-design/icons';
 import { bedhotel1, bedhotel2, bedhotel3, bedhotel4 } from "../../../../../assets/svgs/svgBedHotel";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { COLORS } from "../../../../../constants/constants";
+import { useForm } from "antd/es/form/Form";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateForm } from "../../../../../redux/Slice/Hotels_Mn/formRegisterRoomMnSlice";
+import { selectFormRegisterRoomMn } from "../../../../../redux/selector";
+
 const {Option} = Select;
 function RoomDetails() {
     const navigate = useNavigate();
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [form] = useForm();
+    const dispatch = useDispatch();
+    const {idhotel} = useParams();
+    // lấy token lên để tránh copy link vào trang 
+    const token = localStorage.getItem('token');
+    const formStateRoom = useSelector(selectFormRegisterRoomMn);
     const onFinish = (values:any) => {
-        console.log(values)
+        //chỉ lấy những giường được chọn
+        const filteredBeds = Object.fromEntries(
+            Object.entries(values).filter(([key, value]) => key.startsWith("giuong") && Number(value) > 0)
+        );
+        const payload = {
+            dientichphong: values["dientichphong"],
+            donvido: values["donvido"],
+            issmoking: values["issmoking"],
+            loaichonghi: values["loaichonghi"],
+            soluongkhach: values["soluongkhach"],
+            sophong: values["sophong"],
+            ...filteredBeds
+        }
+        dispatch(updateForm(payload));
+        navigate(`/manage/register-hotel/setup-room/bath-room/${idhotel}?token=${token}`);
     }
     const TypeRoom = ["Phòng đơn", "Phòng giường đôi", "Phòng 2 giường đơn", "Phòng giường đôi/2 giường đơn",
         "Phòng 3 người", "Phòng 4 người", "Suite", "Phòng gia đình", "Studio", "Căn hộ", "Phòng tập thể",
         "Giường trong phòng tập thể"
     ]
+    const checkValidate = (_:any, allvalue:any)=> {
+        //ít nhất phải có 1 giường
+        const tongGiuong = allvalue.giuongdon + allvalue.giuongdoi + allvalue.giuonglon + allvalue.giuongcuclon + allvalue.giuongtang + allvalue.giuongsofa + allvalue.giuongfuton;
+        if(allvalue.soluongkhach === 0 || tongGiuong === 0){
+            setIsDisabled(true);
+        }else{
+            setIsDisabled(false);
+        }
+    }
+    useEffect(()=>{
+        if(formStateRoom){
+            form.setFieldsValue({
+                dientichphong: formStateRoom["dientichphong"],
+                donvido: formStateRoom["donvido"] || 'met',
+                issmoking: formStateRoom["issmoking"] || false,
+                loaichonghi: formStateRoom["loaichonghi"] || "Phòng giường đôi",
+                soluongkhach: formStateRoom["soluongkhach"] || 1,
+                sophong: formStateRoom["sophong"] || 1,
+                giuongdon: formStateRoom["giuongdon"] || 0,
+                giuongdoi: formStateRoom["giuongdoi"] || 1,
+                giuonglon: formStateRoom["giuonglon"] || 0,
+                giuongcuclon: formStateRoom["giuongcuclon"] || 0,
+                giuongtang: formStateRoom["giuongtang"] || 0,
+                giuongsofa: formStateRoom["giuongsofa"] || 0,
+                giuongfuton: formStateRoom["giuongfuton"] || 0,
+            })
+        }
+    },[form])
     return (
         <Space direction="vertical" style={{padding:"60px 200px 60px 200px"}}>
+            {/* Thanh tiến trình  */}
+            <Row style={{position:"fixed", top:64, right:0, left:0, display:"flex", zIndex:2}}>
+                <Col span={6}>
+                    <div style={{height:8, backgroundColor:COLORS.BUTTON, width:"98%"}}></div>
+                </Col>
+                <Col span={6}>
+                    <div style={{height:8, backgroundColor:"#dcdcdc", width:"98%"}}></div>
+                </Col>
+                <Col span={6}>
+                    <div style={{height:8, backgroundColor:"#dcdcdc", width:"98%"}}></div>
+                </Col>
+                <Col span={6}>
+                    <div style={{height:8, backgroundColor:"#dcdcdc", width:"100%"}}></div>
+                </Col>
+            </Row>
             <h1 style={{fontSize:35}}>Chi tiết phòng</h1>
-            <Form onFinish={onFinish} layout="vertical">
+            <Form onValuesChange={checkValidate} form={form} onFinish={onFinish} layout="vertical">
                 <Space direction="vertical" size={"middle"} style={{width:595}}>
                     <Space direction="vertical" size={1} style={{backgroundColor:"#fff", display:"flex", padding:15}}>
                         <Form.Item initialValue={"Phòng giường đôi"} name={"loaichonghi"} label={<h3>Đây là loại chỗ nghỉ gì?</h3>}>
@@ -64,7 +135,7 @@ function RoomDetails() {
                                 </div>
                             </Space>
                             <Space>
-                                <Form.Item style={{marginTop:20}} name="giuongdoi" label={null} initialValue={0}>
+                                <Form.Item style={{marginTop:20}} name="giuongdoi" label={null} initialValue={1}>
                                     <IncreaseDecrease />
                                 </Form.Item>
                             </Space> 
@@ -173,10 +244,10 @@ function RoomDetails() {
                                     </Select>
                                 </Form.Item>
                             </Space>
-                            <Form.Item initialValue={"no"} name="issmoking" label={<h3>Có được hút thuốc trong phòng này không?</h3>}>
+                            <Form.Item initialValue={false} name="issmoking" label={<h3>Có được hút thuốc trong phòng này không?</h3>}>
                                 <Radio.Group>
-                                    <Radio value="yes">Có</Radio>
-                                    <Radio value="no">Không</Radio>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Form.Item>
                     </Space>
@@ -184,8 +255,8 @@ function RoomDetails() {
                     <Form.Item style={{width:585}}>
                         <Row>
                             <Col span={3}><Button onClick={()=>{navigate(-1)}} style={{padding:18}} icon={<LeftOutlined />} block></Button></Col>
-                            <Col span={21}><Button onClick={()=>{navigate('/manage/register-hotel/setup-room/bath-room')}}
-                            type="primary" htmlType="submit" style={{marginLeft:10,padding:18}} block>Tiếp tục</Button></Col>
+                            <Col span={21}><Button 
+                            disabled={isDisabled} type="primary" htmlType="submit" style={{marginLeft:10,padding:18}} block>Tiếp tục</Button></Col>
                         </Row>
                     </Form.Item>
                 </Space>

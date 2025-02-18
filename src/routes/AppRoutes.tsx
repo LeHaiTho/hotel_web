@@ -58,13 +58,13 @@ const AppRoutes = () => {
                 <Route path='register-hotel/setup-hotel/name-hotel' element={<RegisterHotelLayout><NameHotel /></RegisterHotelLayout>} />
                 <Route path='register-hotel/setup-hotel/amenities-hotel' element={<RegisterHotelLayout><AmenitiesHotel /></RegisterHotelLayout>} />
                 <Route path='register-hotel/setup-hotel/check-in-out-hotel' element={<RegisterHotelLayout><CheckInOutHotel /></RegisterHotelLayout>} />
-                <Route path='register-hotel/setup-hotel/multi-step-hotel' element={<RegisterHotelLayout><MultiStepHotel /></RegisterHotelLayout>} />
+                <Route path='register-hotel/setup-hotel/multi-step-hotel/:id' element={<RegisterHotelLayout><MultiStepHotel /></RegisterHotelLayout>} />
                 {/* Setup - Room  */}
-                <Route path='register-hotel/setup-room/room-details' element={<RegisterHotelLayout><RoomDetails /></RegisterHotelLayout>} />
-                <Route path='register-hotel/setup-room/bath-room' element={<RegisterHotelLayout><BathRoom /></RegisterHotelLayout>} />
-                <Route path='register-hotel/setup-room/room-amenities' element={<RegisterHotelLayout><RoomAmenities /></RegisterHotelLayout>} />
-                <Route path='register-hotel/setup-room/name-room' element={<RegisterHotelLayout><NameRoom /></RegisterHotelLayout>} />
-                <Route path='register-hotel/setup-room/image-room' element={<RegisterHotelLayout><ImageRoom /></RegisterHotelLayout>} />
+                <Route path='register-hotel/setup-room/room-details/:idhotel' element={<RegisterHotelLayout><RoomDetails /></RegisterHotelLayout>} />
+                <Route path='register-hotel/setup-room/bath-room/:idhotel' element={<RegisterHotelLayout><BathRoom /></RegisterHotelLayout>} />
+                <Route path='register-hotel/setup-room/room-amenities/:idhotel' element={<RegisterHotelLayout><RoomAmenities /></RegisterHotelLayout>} />
+                <Route path='register-hotel/setup-room/name-room/:idhotel' element={<RegisterHotelLayout><NameRoom /></RegisterHotelLayout>} />
+                <Route path='register-hotel/setup-room/image-room/:idhotel' element={<RegisterHotelLayout><ImageRoom /></RegisterHotelLayout>} />
                 
             </Route>
 

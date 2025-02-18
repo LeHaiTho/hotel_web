@@ -9,6 +9,10 @@ import axios from "axios";
 import { useForm } from "antd/es/form/Form";
 import { useNavigate } from "react-router-dom";
 import { COLORS } from "../../../../../constants/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { updateForm } from "../../../../../redux/Slice/Hotels_Mn/formRegisterHotelMnSlice";
+import { selectFormRegisterHotelMn } from "../../../../../redux/selector";
+import {LeftOutlined } from '@ant-design/icons';
 
 // Định nghĩa icon tùy chỉnh vì mặc định icon của Leaflet bị lỗi khi sử dụng với React
 const customIcon = new L.Icon({
@@ -19,9 +23,11 @@ const customIcon = new L.Icon({
 });
 
 const LocationHotel = () => {
+  const formStateHotel = useSelector(selectFormRegisterHotelMn)
   const [address, setAddress] = useState<any>(null);// địa chỉ map trên bản đồ
   const [selectedCountry, setSelectedCountry] = useState<string | null>("Vietnam");
   const [form] = useForm();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   // lấy token lên để tránh copy link vào trang 
   const token = localStorage.getItem('token');
@@ -62,7 +68,7 @@ const LocationHotel = () => {
       `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
     );
     const data = await response.json();
-    console.log(data)
+    // console.log(data)
     setAddress(data);
   };
   //map địa chỉ mới
@@ -76,12 +82,24 @@ const LocationHotel = () => {
       }
   },[address])
   //lấy vị trị mới
-  const onFinish = () => {
-     navigate(`/manage/register-hotel/setup-hotel/name-hotel?token=${token}`)
+  const onFinish = (values:any) => {
+    dispatch(updateForm(values))
+    navigate(`/manage/register-hotel/setup-hotel/name-hotel?token=${token}`)
   }
   useEffect(()=>{
     handleSearch();
   },[selectedCountry])
+  useEffect(()=>{
+    if(formStateHotel){
+       form.setFieldsValue({
+          address: formStateHotel?.address,
+          apartment:formStateHotel?.apartment,
+          city:formStateHotel?.city,
+          country:formStateHotel?.country,
+          zipcode: formStateHotel?.zipcode
+       })
+    }
+  },[form])
   return (
     <div style={{position:"relative"}}>
       {/* Thanh tiến trình  */}
@@ -197,7 +215,11 @@ const LocationHotel = () => {
 
       {/* Nút gửi */}
       <Form.Item>
-        <Button type="primary" htmlType="submit" style={{padding:18}} block>Tiếp tục</Button>
+        <Row>
+              <Col span={3}><Button onClick={()=>{navigate(-1)}} style={{padding:18}} icon={<LeftOutlined />} block></Button></Col>
+              <Col span={21}><Button
+              type="primary" htmlType="submit" style={{marginLeft:10,padding:18}} block>Tiếp tục</Button></Col>
+        </Row>
       </Form.Item>
     </Form>
         </Space>
