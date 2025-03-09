@@ -25,11 +25,13 @@ import RoomAmenities from "./manage/Management/Hotel/SetupRoom/RoomAmenities";
 import NameRoom from "./manage/Management/Hotel/SetupRoom/NameRoom";
 import ImageRoom from "./manage/Management/Hotel/SetupRoom/ImageRoom";
 import Payment from "./manage/Management/Hotel/SetupRoom/Payment";
-
+import CalendarRoom from "./manage/Management/Room/CalendarandRoom/CalenderRoom";
+import PriceRoom from "./manage/Management/Room/CalendarandRoom/PriceRoom";
 export {
     HomePage, RegisterManager, ContactInfoManager, CreatePasswordManager, VerifyAccountManager,
     LoginEmailMn, LoginPassMn, HomeMnPage,
     TypeHotel, TypeHotel_P2, TypeHotel_P3,TypeHotel_P4,
     LocationHotel, NameHotel, AmenitiesHotel, CheckInOutHotel, MultiStepHotel,
-    RoomDetails, BathRoom, RoomAmenities, NameRoom, ImageRoom, Payment
+    RoomDetails, BathRoom, RoomAmenities, NameRoom, ImageRoom, Payment,
+    CalendarRoom, PriceRoom
 };

@@ -7,7 +7,8 @@ export const APP1 = {
   name: "MNMQ.com"
 }
 
-export const formatCurrency = (amount:number) => {
+export const formatCurrency = (amount1:any) => {
+  const amount = Number(amount1);
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
 };
 // Địa chỉ server

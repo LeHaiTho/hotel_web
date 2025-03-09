@@ -28,7 +28,7 @@ function MultiStepHotel() {
         getAPI_Room();
     },[])
     return ( 
-        <Space direction="vertical" size={"large"} style={{display:"flex",justifyContent:"center", alignItems:"center",marginTop:-64, height:"100vh"}}>
+        <Space direction="vertical" size={"large"} style={{display:"flex",alignItems:"center",padding:"20px 0px 20px 0px"}}>
            <Space style={{width:800, height:90, backgroundColor:"#fff",padding:20,justifyContent:"space-between", alignItems:"center"}}>
                 <Space size={"middle"}>
                     <ReactSVG src={multistep1} />

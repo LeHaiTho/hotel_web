@@ -1,3 +1,7 @@
 .currentcy_space :hover{
     border: 2px solid blue;
 }
+
+.calendarpopupmenu li:hover{
+    background-color: #fafafa
+}

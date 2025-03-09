@@ -8,6 +8,7 @@ import {Input} from "antd";
 import { UserActionsPopup } from "./components";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { CalendarPopupMenu } from "../pages/component/PopupMenu";
 interface Props{
     children: React.ReactNode;  
 }
@@ -29,7 +30,7 @@ function HomeLayout(prop: Props) {
     return (
         <Layout>
             <Layout.Header style={{
-                backgroundColor: COLORS.BACKGROUND, position:"fixed", top:0, left:0, right:0, zIndex:1, color:"#fff",
+                backgroundColor: COLORS.BACKGROUND, position:"fixed", top:0, left:0, right:0, zIndex:10, color:"#fff",
                 height: 144,
                 width: "100%", // Đảm bảo phủ kín chiều ngang
             }}>
@@ -60,14 +61,15 @@ function HomeLayout(prop: Props) {
                     </Space>
                     {/* part 2  */}
                     <Space direction="horizontal" size={"small"} style={{padding:0, margin:0, display:"flex", justifyContent:"space-around"}}>
-                        <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
+                        <div className="group-hover-home" onClick={()=>{navigate(`/manage/home?token=${token}`)}} style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
                             <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_3}/></Badge> </div>
                             <div style={{height:30, padding:0, margin:0}}><span>Trang chủ</span></div>
                         </div>
                         
-                        <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
+                        <div className="group-hover-home calendar-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
                             <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_4}/></Badge> </div>
                             <div style={{height:30, padding:0, margin:0}}><span>Giá & Tình trạng phòng trống <DownOutlined style={{fontSize:10}} /></span></div>
+                            <CalendarPopupMenu />
                         </div>
                         <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
                             <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_5}/></Badge> </div>
