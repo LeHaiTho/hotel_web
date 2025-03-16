@@ -16,12 +16,16 @@ import {
   NameRoom,
   ImageRoom, Payment,
   CalendarRoom,
-  PriceRoom
+  PriceRoom,
+  BookingMessage,
+  AdminMessage,
+  CustomerFAQs
 } from '../pages';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { login, User } from '../redux/Slice/auth/authSlice';
 import { jwtDecode } from 'jwt-decode';
+import DetailRoomU from '../pages/manage/Management/Room/PlaceToStay/DetailRoomU';
 const AppRoutes = () => {
   const dispatch = useDispatch();
   useEffect(()=>{
@@ -73,6 +77,12 @@ const AppRoutes = () => {
                 {/* CalendarRoom */}
                 <Route path='calendar-and-room/calendar' element={<HomeLayout><CalendarRoom /></HomeLayout>} />
                 <Route path='calendar-and-room/price-room' element={<HomeLayout><PriceRoom /></HomeLayout>} />
+                {/* Mail Box  */}
+                <Route path='mail-box-room/booking-message' element={<HomeLayout><BookingMessage /></HomeLayout>} />
+                <Route path='mail-box-room/admin-message' element={<HomeLayout><AdminMessage /></HomeLayout>} />
+                <Route path='mail-box-room/customer-faqs-message' element={<HomeLayout><CustomerFAQs /></HomeLayout>} />
+                {/* Place to Stay  */}
+                <Route path='place-to-stay-room/detail-room-u' element={<HomeLayout><DetailRoomU /></HomeLayout>} />
 
             </Route>
 

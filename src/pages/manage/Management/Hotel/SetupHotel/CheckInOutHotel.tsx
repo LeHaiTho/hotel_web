@@ -5,7 +5,7 @@ import { baseUrl, COLORS } from "../../../../../constants/constants";
 import { useForm } from "antd/es/form/Form";
 import { useDispatch, useSelector } from "react-redux";
 import { resetForm, updateForm } from "../../../../../redux/Slice/Hotels_Mn/formRegisterHotelMnSlice";
-import { selectFormRegisterHotelMn } from "../../../../../redux/selector";
+import { selectAuth, selectFormRegisterHotelMn } from "../../../../../redux/selector";
 import { useEffect } from "react";
 import axios from "axios";
 const { Option } = Select;
@@ -15,6 +15,7 @@ function Check_In_Out_Hotel() {
     // lấy token lên để tránh copy link vào trang 
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
+    const auth = useSelector(selectAuth);
     const formStateHotel = useSelector(selectFormRegisterHotelMn);
     const [form] = useForm();
     const dispatch = useDispatch();
@@ -25,19 +26,23 @@ function Check_In_Out_Hotel() {
     });
     const onFinish = async (values:any) => {
         try{
-            const payload = {
-                ...formStateHotel,
-                ...values
+            //kiểm tra xem đã đăng nhập chưa
+            if(auth){
+                const payload = {
+                    ...formStateHotel,
+                    ...values,
+                    id_user: auth.id
+                }
+                const res = await axios.post(`${baseUrl}hotel-properties/hotel-create`,payload, {
+                    headers: {Authorization: `Bearer ${token}`},
+                });
+                if(res.status === 200){
+                    dispatch(updateForm(values));
+                    //Reset form state
+                    dispatch(resetForm());
+                    navigate(`/manage/register-hotel/setup-hotel/multi-step-hotel/${res.data?.id}?token=${token}`)
+                }  
             }
-            const res = await axios.post(`${baseUrl}hotel-properties/hotel-create`,payload, {
-                headers: {Authorization: `Bearer ${token}`},
-            });
-            if(res.status === 200){
-                dispatch(updateForm(values));
-                //Reset form state
-                dispatch(resetForm());
-                navigate(`/manage/register-hotel/setup-hotel/multi-step-hotel/${res.data?.id}?token=${token}`)
-            }  
         }catch(err){
             console.log(err)
         }

@@ -1,22 +1,48 @@
-import { Badge, Button, Divider, Layout, Space } from "antd";
-import { APP1, COLORS } from "../constants/constants";
+import { Avatar, Badge, Button, Divider, Layout, Popover, Space } from "antd";
+import { APP1, baseUrl, COLORS } from "../constants/constants";
 import {svg_1, svg_10, svg_11, svg_12, svg_13, svg_14, svg_2, svg_3, svg_4, svg_5, svg_6, svg_7, svg_8, svg_9} from "../assets/svgs";
 import './index.css'
-import { DownOutlined } from '@ant-design/icons';
+import { CopyOutlined, DownOutlined } from '@ant-design/icons';
 import { ReactSVG } from 'react-svg';
 import {Input} from "antd";
 import { UserActionsPopup } from "./components";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { CalendarPopupMenu } from "../pages/component/PopupMenu";
+import { useEffect, useState } from "react";
+import { AnalyzePopupMenu, CalendarPopupMenu, FinancePopupMenu, MailboxPopupMenu, PerformancePopupMenu, PlaceToStayPopupMenu, PromotionalPopupMenu, ReviewPopupMenu } from "../pages/component/PopupMenu";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../redux/selector";
+import axios from "axios";
 interface Props{
     children: React.ReactNode;  
 }
 function HomeLayout(prop: Props) {
     const navigate = useNavigate();
+    const auth = useSelector(selectAuth);
+    //Khách sạn được chọn
+    const [selectHotel, setSelectHotel] = useState<any>();
+    //khách sạn đã hoàn thành đăng ký
+    const [hotelRegister, setHotelRegister] = useState<any[]>([]);
     const { children } = prop;
     // lấy token lên để tránh copy link vào trang 
     const token = localStorage.getItem('token');
+    //lấy những khách sạn đã đăng ký sửa lại isRegister thành true
+    const getAPIHotelRegister = async () => {
+        try{
+            if(auth){
+                const res = await axios.post(`${baseUrl}hotel-properties/hotel/register-isboolean/${auth?.id}`,{isRegister: false}, {
+                    headers: {Authorization: `Bearer ${token}`},
+                });
+                setHotelRegister(res.data);
+                //mặc định 
+                setSelectHotel(res.data[0])
+            }
+        }catch(err){
+            console.log(err);
+        }
+    }
+    useEffect(()=>{
+        getAPIHotelRegister();
+    },[auth])
     useEffect(()=>{
         // kiểm tra link hiện tại có phải đúng token không 
         const urlParams = new URLSearchParams(window.location.search);
@@ -38,13 +64,48 @@ function HomeLayout(prop: Props) {
                     <Space style={{display:"flex", justifyContent:"space-between"}}>
                         <Space style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
                             <h1>{APP1.name}</h1>
-                            <Space className="group-hover" direction="horizontal" style={{
-                                padding:"0px 3px 0px 3px", alignItems:"center", justifyContent:"center"
-                            }}>
-                                <span>Việt Anh</span>
-                                <span style={{border:"0.5px solid #fff", padding:3, fontWeight:600}}>12348769</span>
-                                <ReactSVG  src={svg_1} />
-                            </Space>
+                            <Popover arrow={false} placement="bottomLeft" trigger={"click"} title={
+                                <Space direction="vertical" size={1} style={{minWidth:300}}>
+                                    <span>{`${auth?.lastname} ${auth?.firstname}`}</span>
+                                    <span style={{border:"1px solid #6b6b6b", padding:3, color:"#6b6b6b",fontSize:12, fontWeight:400}}>ID pháp nhân: {auth?.id}</span>
+                                </Space>
+                            } 
+                            content={
+                                <Space size={1} direction="vertical" style={{display:"flex", paddingBottom:10}}>
+                                    {
+                                        hotelRegister ? hotelRegister.map((item:any)=>{
+                                            return <div key={item?.id} style={{cursor:"pointer"}}>
+                                                    <Divider style={{margin:"5px 0px 5px 0px"}} />
+                                                    <Space className="item-hotel-menu" style={{display:'flex', justifyContent:"space-between", padding:3}}>
+                                                        <Space style={{display:"flex", alignItems:"center"}}>
+                                                            <Avatar alt="image" shape="square" src={`${baseUrl}hotel-properties/hotel/get-image/${item?.id}/${item?.images?.split(',')[0]}`} size={"large"} />
+                                                            <Space size={1} direction="vertical">
+                                                                <span style={{fontWeight:"bold"}}>{item?.name}</span>
+                                                                <span style={{border:"1px solid #6b6b6b", padding:3, color:"#6b6b6b",fontSize:12, fontWeight:400}}>{`${item?.id}-1234213`}</span>
+                                                            </Space>
+                                                        </Space>
+                                                        <CopyOutlined style={{fontSize:16, color:"#6b6b6b"}} />
+                                                    </Space>
+                                                </div>
+                                        }) : <span style={{display:"flex",justifyContent:"center", color:"#cecece"}}>Danh sách trống</span>
+                                    }
+                                </Space>
+                            }>
+                                <Space className="group-hover" direction="horizontal" style={{
+                                        padding:"0px 3px 0px 3px", alignItems:"center", justifyContent:"center"
+                                    }}>
+                                        {
+                                            selectHotel ? <div>
+                                                <span style={{textTransform:"uppercase", fontWeight:500}}>{selectHotel?.name} </span>
+                                                <span style={{border:"0.5px solid #fff", padding:3, fontWeight:600}}>{`${selectHotel?.id}-1234213`}</span>
+                                            </div> : <div>
+                                                <span>Việt Anh</span>
+                                                <span style={{border:"0.5px solid #fff", padding:3, fontWeight:600}}>12348769</span>
+                                            </div>
+                                        }
+                                        <ReactSVG  src={svg_1} />
+                                    </Space>
+                            </Popover>
                             <ReactSVG src={svg_2} />
                         </Space>
                         <Space size={"large"} style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
@@ -62,7 +123,7 @@ function HomeLayout(prop: Props) {
                     {/* part 2  */}
                     <Space direction="horizontal" size={"small"} style={{padding:0, margin:0, display:"flex", justifyContent:"space-around"}}>
                         <div className="group-hover-home" onClick={()=>{navigate(`/manage/home?token=${token}`)}} style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
-                            <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_3}/></Badge> </div>
+                            <div style={{height:30, padding:0, margin:0}}><ReactSVG src={svg_3}/></div>
                             <div style={{height:30, padding:0, margin:0}}><span>Trang chủ</span></div>
                         </div>
                         
@@ -71,37 +132,44 @@ function HomeLayout(prop: Props) {
                             <div style={{height:30, padding:0, margin:0}}><span>Giá & Tình trạng phòng trống <DownOutlined style={{fontSize:10}} /></span></div>
                             <CalendarPopupMenu />
                         </div>
-                        <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
-                            <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_5}/></Badge> </div>
+                        <div className="group-hover-home promotional-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
+                            <div style={{height:30, padding:0, margin:0}}><ReactSVG src={svg_5}/></div>
                             <div style={{height:30, padding:0, margin:0}}><span>Chương trình khuyến mãi <DownOutlined style={{fontSize:10}} /></span></div>
+                            <PromotionalPopupMenu />
                         </div>
                         <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
-                            <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_6}/></Badge> </div>
+                            <div style={{height:30, padding:0, margin:0}}><ReactSVG src={svg_6}/></div>
                             <div style={{height:30, padding:0, margin:0}}><span>Đặt phòng</span></div>
                         </div>
-                        <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
+                        <div className="group-hover-home placetostay-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
                             <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_7}/></Badge> </div>
                             <div style={{height:30, padding:0, margin:0}}><span>Chỗ nghỉ <DownOutlined style={{fontSize:10}} /></span></div>
+                            <PlaceToStayPopupMenu />
                         </div>
-                        <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
+                        <div className="group-hover-home performance-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
                             <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_8}/></Badge> </div>
                             <div style={{height:30, padding:0, margin:0}}><span>Thúc đẩy hiệu suất <DownOutlined style={{fontSize:10}} /></span></div>
+                            <PerformancePopupMenu />
                         </div>
-                        <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
-                            <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_9}/></Badge> </div>
-                            <div style={{height:30, padding:0, margin:0}}><span>Thúc đẩy hiệu suất <DownOutlined style={{fontSize:10}} /></span></div>
+                        <div className="group-hover-home mailbox-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
+                            <div style={{height:30, padding:0, margin:0}}><ReactSVG src={svg_9}/></div>
+                            <div style={{height:30, padding:0, margin:0}}><span>Hộp thư <DownOutlined style={{fontSize:10}} /></span></div>
+                            <MailboxPopupMenu />
                         </div>
-                        <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
-                            <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_10}/></Badge> </div>
-                            <div style={{height:30, padding:0, margin:0}}><span>Thúc đẩy hiệu suất <DownOutlined style={{fontSize:10}} /></span></div>
+                        <div className="group-hover-home review-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
+                            <div style={{height:30, padding:0, margin:0}}><ReactSVG src={svg_10}/></div>
+                            <div style={{height:30, padding:0, margin:0}}><span>Đánh giá của khách <DownOutlined style={{fontSize:10}} /></span></div>
+                            <ReviewPopupMenu />
                         </div>
-                        <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
-                            <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_11}/></Badge> </div>
+                        <div className="group-hover-home finance-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
+                            <div style={{height:30, padding:0, margin:0}}><ReactSVG src={svg_11}/></div>
                             <div style={{height:30, padding:0, margin:0}}><span>Tài chính <DownOutlined style={{fontSize:10}} /></span></div>
+                            <FinancePopupMenu />
                         </div>
-                        <div className="group-hover-home" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0}}>
-                            <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_12}/></Badge> </div>
+                        <div className="group-hover-home analyze-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
+                            <div style={{height:30, padding:0, margin:0}}><ReactSVG src={svg_12}/></div>
                             <div style={{height:30, padding:0, margin:0}}><span>Phân tích <DownOutlined style={{fontSize:10}} /></span></div>
+                            <AnalyzePopupMenu />
                         </div>
                     </Space>
             </Layout.Header>

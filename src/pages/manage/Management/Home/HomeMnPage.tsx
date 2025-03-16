@@ -4,9 +4,12 @@ import { ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../../../../redux/selector";
 
 function HomeMnPage() {
     const navigate = useNavigate();
+    const auth = useSelector(selectAuth)
     //khách sạn chưa hoàn thành đăng ký
     const [hotelRegister, setHotelRegister] = useState<any[]>([]);
 
@@ -14,17 +17,19 @@ function HomeMnPage() {
     const token = localStorage.getItem('token');
     const getAPIHotelRegister = async () => {
         try{
-            const res = await axios.get(`${baseUrl}hotel-properties/hotel/register-isboolean`, {
-                headers: {Authorization: `Bearer ${token}`},
-            });
-            setHotelRegister(res.data);
+            if(auth){
+                const res = await axios.post(`${baseUrl}hotel-properties/hotel/register-isboolean/${auth?.id}`,{isRegister: false}, {
+                    headers: {Authorization: `Bearer ${token}`},
+                });
+                setHotelRegister(res.data);
+            }
         }catch(err){
             console.log(err);
         }
     }
     useEffect(()=>{
         getAPIHotelRegister();
-    },[])
+    },[auth])
     return ( 
         <Space direction="vertical" style={{display:"flex", backgroundColor:"#f2f2f2", padding:"50px 100px 100px 100px"}}>
             <Space style={{display:"flex",justifyContent:"space-between"}}>

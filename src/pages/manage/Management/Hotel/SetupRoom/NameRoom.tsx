@@ -25,6 +25,10 @@ function NameRoom() {
         const moneyNumber =  money.replace(/\D/g, "");
         return Math.round((Number(moneyNumber) * 85 / 100));
     }
+    const toPay1 = (money: string): number => {
+        const moneyNumber =  money.replace(/\D/g, "");
+        return Number(moneyNumber);
+    }
     //tính giá trị gốc
     const getFullValue = (currentValue:number, percent:number) : number => {
         return (currentValue / percent) * 100;
@@ -55,9 +59,10 @@ function NameRoom() {
     ]
     const onFinish = async (values: any) => {
         console.log(values);
+        //topay() để lấy hoa hồng toPay(values?.sotien) sửa ngày 10/03/2025
         const payload = {
             nameroom: values?.nameroom,
-            sotien: toPay(values?.sotien),
+            sotien: toPay1(values?.sotien),
         }
         dispatch(updateForm(payload))
         const payloads = {

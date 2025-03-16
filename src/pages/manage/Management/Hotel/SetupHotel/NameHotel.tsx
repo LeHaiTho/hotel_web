@@ -7,6 +7,7 @@ import { updateForm } from "../../../../../redux/Slice/Hotels_Mn/formRegisterHot
 import { selectFormRegisterHotelMn } from "../../../../../redux/selector";
 import { useEffect } from "react";
 import { useForm } from "antd/es/form/Form";
+import axios from "axios";
 
 function NameHotel() {
     const navigate = useNavigate();
@@ -15,10 +16,13 @@ function NameHotel() {
     const [form] = useForm();
     const formStateHotel = useSelector(selectFormRegisterHotelMn)
     const dispatch = useDispatch();
-    const onFinish = (values:any) => {
+    const onFinish = async (values:any) => {
+        //lấy địa chỉ lat long
+        const latlon = await getlatlong();
         dispatch(updateForm({
             name: values?.namehotel,
-            rate: values?.rate
+            rate: values?.rate,
+            ...latlon,
         }));
         navigate(`/manage/register-hotel/setup-hotel/amenities-hotel?token=${token}`);
     }
@@ -29,7 +33,22 @@ function NameHotel() {
                 rate: formStateHotel?.rate || 0
             })
         }
-    },[form])
+    },[form]);
+   
+    const getlatlong = async () : Promise<{ latitude: string, longitude: string } | {}> => {
+        try {
+            const address = formStateHotel?.address;
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+            const res = await axios.get(url);
+            return {
+                latitude: res.data[0].lat,
+                longitude: res.data[0].lon
+            }
+        } catch (error) {
+            console.log(error);
+            return {};
+        }
+    }
     return ( 
         <Space direction="vertical" style={{padding:"60px 200px 60px 200px"}}>
             {/* Thanh tiến trình  */}

@@ -49,6 +49,7 @@
     cursor: pointer;
     background-color: rgba(31, 78, 143, 0.9);
 }
+ /* chỉnh sửa popup menu  */
 .group-hover-home{
     border-bottom: 5px solid #003b95;
 }
@@ -61,3 +62,32 @@
 .group-hover-home.calendar-menu:hover .calendarpopupmenu{
     display:block !important;
 } 
+
+.group-hover-home.mailbox-menu:hover .mailboxpopupmenu{
+    display:block !important;
+} 
+
+.group-hover-home.promotional-menu:hover .promotionalpopupmenu{
+    display:block !important;
+} 
+.group-hover-home.placetostay-menu:hover .placetostaypopupmenu{
+    display:block !important;
+} 
+
+.group-hover-home.performance-menu:hover .performancepopupmenu{
+    display:block !important;
+} 
+.group-hover-home.review-menu:hover .reviewpopupmenu{
+    display:block !important;
+} 
+.group-hover-home.finance-menu:hover .financepopupmenu{
+    display:block !important;
+} 
+.group-hover-home.analyze-menu:hover .analyzepopupmenu{
+    display:block !important;
+} 
+
+/* hover cho menu hotel  */
+.item-hotel-menu:hover {
+    background-color: #fafafa;
+}
