@@ -14,12 +14,15 @@ import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/vi";
 import { useEffect, useState } from "react";
 import { baseUrl, formatCurrency } from "../../../../../constants/constants";
+import { useSelector } from "react-redux";
+import { selectHotelMn } from "../../../../../redux/selector";
 const {Option} = Select;
 
 dayjs.locale("vi");
 
 
 function CalendarRoom() {
+  const hotel = useSelector(selectHotelMn);
   const [api, contextHolder] = notification.useNotification();
   const token = localStorage.getItem("token");
   const [createdroom, setCreatedRoom] = useState<any[]>([]);  //mảng phòng đã tạo
@@ -41,8 +44,8 @@ function CalendarRoom() {
   };
   const getAPIRoomcreated = async()=>{
     try{
-        if(token){
-          const res = await axios.get(`${baseUrl}hotel-properties/room/get-rooms`, {
+        if(token && hotel){
+          const res = await axios.get(`${baseUrl}hotel-properties/room/get-rooms/${hotel?.id}`, {
             headers: {Authorization: `Bearer ${token}`},
           })
           setCreatedRoom(res.data)
@@ -109,7 +112,7 @@ function CalendarRoom() {
   },[selectRoomid])
   useEffect(()=>{
     getAPIRoomcreated();
-  },[])
+  },[hotel])
   return (
     <div style={{zIndex:2}}>
       {contextHolder}

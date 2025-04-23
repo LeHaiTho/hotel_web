@@ -19,13 +19,17 @@ import {
   PriceRoom,
   BookingMessage,
   AdminMessage,
-  CustomerFAQs
+  CustomerFAQs,
+  DetailRoomU_1
 } from '../pages';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { login, User } from '../redux/Slice/auth/authSlice';
 import { jwtDecode } from 'jwt-decode';
 import DetailRoomU from '../pages/manage/Management/Room/PlaceToStay/DetailRoomU';
+import { AdminLayout } from '../layouts/admin';
+import { HomeAdmin, LoginAdmin } from '../pages/admin';
+import IndexAdmin from '../pages/admin/IndexAdmin';
 const AppRoutes = () => {
   const dispatch = useDispatch();
   useEffect(()=>{
@@ -83,9 +87,17 @@ const AppRoutes = () => {
                 <Route path='mail-box-room/customer-faqs-message' element={<HomeLayout><CustomerFAQs /></HomeLayout>} />
                 {/* Place to Stay  */}
                 <Route path='place-to-stay-room/detail-room-u' element={<HomeLayout><DetailRoomU /></HomeLayout>} />
+                <Route path='place-to-stay-room/detail-room-u1/:idroom' element={<HomeLayout><DetailRoomU_1 /></HomeLayout>} />
 
             </Route>
 
+            <Route path='/admin'>
+                <Route index element={<LoginAdmin />} />
+                <Route path='login' element={<LoginAdmin />} />
+                <Route path='home/home-index' element={<AdminLayout><HomeAdmin /></AdminLayout>} />
+                <Route path='home/trangchu-index' element={<AdminLayout><IndexAdmin/></AdminLayout>} />
+            </Route>
+            
           </Routes>
       </Router>
     );

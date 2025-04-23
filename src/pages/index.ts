@@ -30,11 +30,16 @@ import PriceRoom from "./manage/Management/Room/CalendarandRoom/PriceRoom";
 import BookingMessage from "./manage/Management/Room/Mailbox/BookingMessage";
 import AdminMessage from "./manage/Management/Room/Mailbox/AdminMessage";
 import CustomerFAQs from "./manage/Management/Room/Mailbox/CustomerFAQs";
+
+//Place to Stay
+import DetailRoomU_1 from "./manage/Management/Room/PlaceToStay/DetailRoomU_1";
+
 export {
     HomePage, RegisterManager, ContactInfoManager, CreatePasswordManager, VerifyAccountManager,
     LoginEmailMn, LoginPassMn, HomeMnPage,
     TypeHotel, TypeHotel_P2, TypeHotel_P3,TypeHotel_P4,
     LocationHotel, NameHotel, AmenitiesHotel, CheckInOutHotel, MultiStepHotel,
     RoomDetails, BathRoom, RoomAmenities, NameRoom, ImageRoom, Payment,
-    CalendarRoom, PriceRoom, BookingMessage, AdminMessage, CustomerFAQs
+    CalendarRoom, PriceRoom, BookingMessage, AdminMessage, CustomerFAQs,
+    DetailRoomU_1
 };

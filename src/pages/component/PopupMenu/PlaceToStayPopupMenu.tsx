@@ -1,7 +1,10 @@
 import { Tag } from "antd";
 import { useNavigate } from "react-router-dom";
-
-function PlaceToStayPopupMenu() {
+interface Prop {
+    idhotel?: number;
+}
+function PlaceToStayPopupMenu(prop: Prop) {
+    const {idhotel} = prop;
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
     return ( 
@@ -17,7 +20,7 @@ function PlaceToStayPopupMenu() {
                <li style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}>Hình ảnh</li>
                <li style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}>Chính sách</li>
                <li style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}>Tiện nghi và dịch vụ</li>
-               <li onClick={()=>navigate(`/manage/place-to-stay-room/detail-room-u?token=${token}`)} style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}>Chi tiết phòng</li>
+               <li onClick={()=>navigate(`/manage/place-to-stay-room/detail-room-u?token=${token}`, {state: idhotel})} style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}>Chi tiết phòng</li>
                <li style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}>Tiện nghi phòng</li>
                <li style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}>Hồ sơ của Quý vị</li>
                <li style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}>Xem mô tả chỗ nghỉ</li>

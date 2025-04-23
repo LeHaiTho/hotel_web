@@ -9,17 +9,20 @@ import { UserActionsPopup } from "./components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { AnalyzePopupMenu, CalendarPopupMenu, FinancePopupMenu, MailboxPopupMenu, PerformancePopupMenu, PlaceToStayPopupMenu, PromotionalPopupMenu, ReviewPopupMenu } from "../pages/component/PopupMenu";
-import { useSelector } from "react-redux";
-import { selectAuth } from "../redux/selector";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAuth, selectHotelMn } from "../redux/selector";
 import axios from "axios";
+import { update } from "../redux/Slice/Hotels_Mn/hotelMnSlice";
 interface Props{
     children: React.ReactNode;  
 }
 function HomeLayout(prop: Props) {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const auth = useSelector(selectAuth);
+    const [IsOpenPopup, setIsOpenPopup] = useState(false);
     //Khách sạn được chọn
-    const [selectHotel, setSelectHotel] = useState<any>();
+    const selectHotel = useSelector(selectHotelMn);
     //khách sạn đã hoàn thành đăng ký
     const [hotelRegister, setHotelRegister] = useState<any[]>([]);
     const { children } = prop;
@@ -34,7 +37,7 @@ function HomeLayout(prop: Props) {
                 });
                 setHotelRegister(res.data);
                 //mặc định 
-                setSelectHotel(res.data[0])
+                dispatch(update((res.data[0])));
             }
         }catch(err){
             console.log(err);
@@ -64,7 +67,7 @@ function HomeLayout(prop: Props) {
                     <Space style={{display:"flex", justifyContent:"space-between"}}>
                         <Space style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
                             <h1>{APP1.name}</h1>
-                            <Popover arrow={false} placement="bottomLeft" trigger={"click"} title={
+                            <Popover open={IsOpenPopup} arrow={false} placement="bottomLeft" trigger={"click"} title={
                                 <Space direction="vertical" size={1} style={{minWidth:300}}>
                                     <span>{`${auth?.lastname} ${auth?.firstname}`}</span>
                                     <span style={{border:"1px solid #6b6b6b", padding:3, color:"#6b6b6b",fontSize:12, fontWeight:400}}>ID pháp nhân: {auth?.id}</span>
@@ -74,11 +77,12 @@ function HomeLayout(prop: Props) {
                                 <Space size={1} direction="vertical" style={{display:"flex", paddingBottom:10}}>
                                     {
                                         hotelRegister ? hotelRegister.map((item:any)=>{
-                                            return <div key={item?.id} style={{cursor:"pointer"}}>
+                                            return <div key={item?.id} style={{cursor:"pointer"}} onClick={()=>{dispatch(update(item)); setIsOpenPopup(false)}}>
                                                     <Divider style={{margin:"5px 0px 5px 0px"}} />
                                                     <Space className="item-hotel-menu" style={{display:'flex', justifyContent:"space-between", padding:3}}>
                                                         <Space style={{display:"flex", alignItems:"center"}}>
-                                                            <Avatar alt="image" shape="square" src={`${baseUrl}hotel-properties/hotel/get-image/${item?.id}/${item?.images?.split(',')[0]}`} size={"large"} />
+                                                            <Avatar alt="image" shape="square" src={item?.images ? `${baseUrl}hotel-properties/hotel/get-image/${item?.id}/${item?.images?.split(',')[0]}` :
+                                                        `https://www.hotellinksolutions.com/images/blog/cac-nguon-booking-khach-san.jpg`} size={"large"} />
                                                             <Space size={1} direction="vertical">
                                                                 <span style={{fontWeight:"bold"}}>{item?.name}</span>
                                                                 <span style={{border:"1px solid #6b6b6b", padding:3, color:"#6b6b6b",fontSize:12, fontWeight:400}}>{`${item?.id}-1234213`}</span>
@@ -90,8 +94,9 @@ function HomeLayout(prop: Props) {
                                         }) : <span style={{display:"flex",justifyContent:"center", color:"#cecece"}}>Danh sách trống</span>
                                     }
                                 </Space>
-                            }>
-                                <Space className="group-hover" direction="horizontal" style={{
+                            }
+                            onOpenChange={setIsOpenPopup}>
+                                <Space className="group-hover" onClick={()=>setIsOpenPopup(true)} direction="horizontal" style={{
                                         padding:"0px 3px 0px 3px", alignItems:"center", justifyContent:"center"
                                     }}>
                                         {
@@ -130,7 +135,7 @@ function HomeLayout(prop: Props) {
                         <div className="group-hover-home calendar-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
                             <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_4}/></Badge> </div>
                             <div style={{height:30, padding:0, margin:0}}><span>Giá & Tình trạng phòng trống <DownOutlined style={{fontSize:10}} /></span></div>
-                            <CalendarPopupMenu />
+                            <CalendarPopupMenu idhotel={selectHotel?.id} />
                         </div>
                         <div className="group-hover-home promotional-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
                             <div style={{height:30, padding:0, margin:0}}><ReactSVG src={svg_5}/></div>
@@ -144,7 +149,7 @@ function HomeLayout(prop: Props) {
                         <div className="group-hover-home placetostay-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
                             <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_7}/></Badge> </div>
                             <div style={{height:30, padding:0, margin:0}}><span>Chỗ nghỉ <DownOutlined style={{fontSize:10}} /></span></div>
-                            <PlaceToStayPopupMenu />
+                            <PlaceToStayPopupMenu idhotel={selectHotel?.id} />
                         </div>
                         <div className="group-hover-home performance-menu" style={{display:"flex", flexDirection:"column", alignItems:"center",padding:"0px 5px 15px 5px", margin:0, position:"relative"}}>
                             <div style={{height:30, padding:0, margin:0}}><Badge color="#cc0000" size={"small"} count={5}><ReactSVG src={svg_8}/></Badge> </div>

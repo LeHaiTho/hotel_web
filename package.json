@@ -25,6 +25,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.1",
     "react-svg": "^16.2.0",
+    "recharts": "^2.15.2",
     "world-countries": "^5.0.0"
   },
   "devDependencies": {

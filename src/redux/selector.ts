@@ -11,3 +11,6 @@ export const selectFormRegisterHotelMn = (state: RootState) => state.formRegiste
 
 //Lấy form đăng ký phòng
 export const selectFormRegisterRoomMn = (state: RootState) => state.formRegisterRoomMn.form
+
+//Lấy ra khách chọn đã chọn
+export const selectHotelMn = (state: RootState) => state.hotel.hotel

@@ -1,13 +1,15 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { formLoginMnSlice, formRegisterMnSlice, authSlice } from "./Slice/auth";
-import {formRegisterHotelMnSlice, formRegisterRoomMnSlice} from "./Slice/Hotels_Mn/index"
+import {formRegisterHotelMnSlice, formRegisterRoomMnSlice, hotelMnSlice} from "./Slice/Hotels_Mn/index"
+
 // Kết hợp các reducer thành rootReducer
 const rootReducer = combineReducers({
     auth: authSlice,
     formRegisterMn: formRegisterMnSlice,
     formLoginMn: formLoginMnSlice,
     formRegisterHotelMn: formRegisterHotelMnSlice,
-    formRegisterRoomMn: formRegisterRoomMnSlice
+    formRegisterRoomMn: formRegisterRoomMnSlice,
+    hotel: hotelMnSlice
 });
 
 //Tạo store
