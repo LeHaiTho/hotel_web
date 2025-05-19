@@ -395,7 +395,7 @@ function HomeLayout(prop: Props) {
             </div>
             <PlaceToStayPopupMenu idhotel={selectHotel?.id} />
           </div>
-          <div
+          {/* <div
             className="group-hover-home performance-menu"
             style={{
               display: "flex",
@@ -438,7 +438,7 @@ function HomeLayout(prop: Props) {
               </span>
             </div>
             <MailboxPopupMenu />
-          </div>
+          </div> */}
           <div
             className="group-hover-home review-menu"
             style={{
@@ -505,7 +505,11 @@ function HomeLayout(prop: Props) {
         </Space>
       </Layout.Header>
       <Layout.Content style={{ marginTop: 144 }}>{children}</Layout.Content>
-      <Layout.Footer style={{ backgroundColor: COLORS.BACKGROUND }}>
+      <Layout.Footer
+        style={{
+          backgroundColor: COLORS.BACKGROUND,
+        }}
+      >
         <Space direction="vertical" style={{ display: "flex" }}>
           <Space style={{ display: "flex", justifyContent: "space-between" }}>
             <Space size={"large"}>

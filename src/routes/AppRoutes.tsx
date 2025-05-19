@@ -49,6 +49,8 @@ import Thanhtoan from "../pages/admin/Thanhtoan";
 import Khachsan from "../pages/admin/Khachsan";
 import TypeHotelAd from "../pages/admin/TypeHotelAd";
 import RevenueReport from "../pages/manage/Management/dashboard/RevenueReport";
+import DashboardManager from "../pages/manage/Management/dashboard/DashboardManager";
+import Promotion from "../pages/admin/Promotion";
 const AppRoutes = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -299,6 +301,15 @@ const AppRoutes = () => {
             }
           />
           <Route
+            path="dashboard"
+            element={
+              <HomeLayout>
+                <DashboardManager />
+              </HomeLayout>
+            }
+          />
+
+          <Route
             path="system-promotion"
             element={
               <HomeLayout>
@@ -423,6 +434,14 @@ const AppRoutes = () => {
             element={
               <AdminLayout>
                 <TypeHotelAd />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path="home/promotion"
+            element={
+              <AdminLayout>
+                <Promotion />
               </AdminLayout>
             }
           />

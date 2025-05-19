@@ -73,8 +73,24 @@ button:focus-visible {
   }
 } */
 
-*{
+* {
   margin: 0; /* Loại bỏ khoảng cách mặc định */
   padding: 0; /* Loại bỏ padding mặc định */
   box-sizing: border-box; /* Áp dụng box-sizing để tính toán padding và border */
+}
+.ant-table-thead > tr > th.ant-table-cell {
+  background-color: #003b95 !important;
+  color: white;
+  font-weight: bold;
+  padding: 12px 16px;
+}
+.ant-tabs-nav-list > div.ant-tabs-tab {
+  color: #003b95;
+  background-color: #fff !important;
+}
+
+.ant-tabs-nav-list > div.ant-tabs-tab-active {
+  color: #fff !important;
+  background-color: #003b95 !important;
+  padding: 12px 16px;
 }

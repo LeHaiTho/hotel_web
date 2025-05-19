@@ -94,33 +94,41 @@ function BookingAll() {
       title: "Trạng thái",
       dataIndex: "status",
       filters: [
-        { text: "CANCELLED", value: "CANCELLED" },
-        { text: "PENDING", value: "PENDING" },
-        { text: "CONFIRMED", value: "CONFIRMED" },
+        { text: "Đã hủy", value: "CANCELLED" },
+        { text: "Đang xử lý", value: "PENDING" },
+        { text: "Đã xác nhận", value: "CONFIRMED" },
       ],
       onFilter: (value: any, record: any) => record.status === value,
       render: (text: any) => {
         let color = "";
         switch (text) {
           case "CANCELLED":
-            color = "red";
+            color = "#FF0000";
+            text = "Đã hủy";
             break;
           case "PENDING":
-            color = "gold";
+            color = "#FFD700";
+            text = "Đang xử lý";
             break;
           case "CONFIRMED":
-            color = "green";
+            color = "#008000";
+            text = "Đã xác nhận";
             break;
           default:
-            color = "default";
+            color = "#000000";
+            text = "Đang xử lý";
         }
-        return <Tag color={color}>{text}</Tag>;
+        return (
+          <Tag style={{ fontSize: 13.5, backgroundColor: color }} color="white">
+            {text}
+          </Tag>
+        );
       },
     },
   ];
   return (
     <div style={{ padding: 20 }}>
-      <h1>THỐNG KÊ BOOKING</h1>
+      <h1>Tất cả lịch đặt phòng</h1>
       <Divider />
       <Row style={{ display: "flex" }}>
         <Col

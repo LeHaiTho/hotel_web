@@ -34,6 +34,8 @@ function AdminLayout(prop: Prop) {
       navigate("/admin/home/thongke-khach-san");
     } else if (e.key === "5_0") {
       navigate("/admin/home/thongke-loai-khach-san");
+    } else if (e.key === "6") {
+      navigate("/admin/home/promotion");
     }
   };
   const itemMenu = [
@@ -47,20 +49,20 @@ function AdminLayout(prop: Prop) {
         { key: "1_1", label: "Quản lý" },
       ],
     },
-    { key: "2", label: "Booking" },
-    { key: "3", label: "Thanh toán" },
+    { key: "2", label: "Lịch đặt phòng" },
+    { key: "3", label: "Đối soát doanh thu" },
     { key: "4", label: "Khách sạn" },
     {
       key: "5",
       label: "Danh mục",
       children: [{ key: "5_0", label: "Loại khách sạn" }],
     },
-    { key: "6", label: "Cấu hình hệ thống" },
-    { key: "7", label: "Chanel Manager" },
-    { key: "8", label: "Báo cáo" },
-    { key: "9", label: "Kho hàng" },
-    // {key: '10', label: 'Quản lý quý'},
-    { key: "11", label: "MNQQ" },
+    // { key: "6", label: "Khuyến mãi" },
+    // { key: "7", label: "Chanel Manager" },
+    // { key: "8", label: "Báo cáo" },
+    // { key: "9", label: "Kho hàng" },
+    // // {key: '10', label: 'Quản lý quý'},
+    // { key: "11", label: "MNQQ" },
   ];
   //   useEffect(() => {
   //     if (auth?.role_name !== "admin") {

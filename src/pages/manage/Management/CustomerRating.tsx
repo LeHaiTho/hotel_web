@@ -416,7 +416,7 @@ const CustomerRating: React.FC = () => {
               }
               extra={
                 <Space>
-                  <Tooltip title="Ẩn đánh giá">
+                  {/* <Tooltip title="Ẩn đánh giá">
                     <Button
                       icon={<EyeInvisibleOutlined />}
                       onClick={(e) => {
@@ -426,7 +426,7 @@ const CustomerRating: React.FC = () => {
                       loading={actionLoading[rating.id]}
                       type="text"
                     />
-                  </Tooltip>
+                  </Tooltip> */}
                   <Tooltip title="Xóa đánh giá">
                     <Button
                       danger

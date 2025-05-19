@@ -8,6 +8,8 @@ import {
   Rate,
   Select,
   DatePicker,
+  message,
+  Popconfirm,
 } from "antd";
 import axios from "axios";
 import moment from "moment";
@@ -25,6 +27,7 @@ const RevenueReport: React.FC = () => {
   const [dateFilter, setDateFilter] = useState<moment.Moment | null>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
   // Lấy danh sách đặt phòng
   useEffect(() => {
@@ -57,6 +60,42 @@ const RevenueReport: React.FC = () => {
     };
     fetchBookings();
   }, [hotel?.id, token, statusFilter, dateFilter]);
+
+  // Hàm xử lý check-in
+  const handleCheckIn = async (bookingId: number) => {
+    setConfirmLoading(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/booking/check-in/${bookingId}`
+      );
+
+      if (response.status === 200) {
+        message.success("Check-in thành công!");
+
+        // Cập nhật trạng thái trong danh sách đặt phòng
+        setBookings((prevBookings) =>
+          prevBookings.map((booking) =>
+            booking.id === bookingId
+              ? { ...booking, status: "CONFIRMED" }
+              : booking
+          )
+        );
+
+        // Nếu đang xem chi tiết booking này, cập nhật trạng thái
+        if (selectedBooking && selectedBooking.id === bookingId) {
+          setSelectedBooking({
+            ...selectedBooking,
+            status: "CONFIRMED",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Lỗi khi check-in:", error);
+      message.error("Không thể check-in. Vui lòng thử lại sau.");
+    } finally {
+      setConfirmLoading(false);
+    }
+  };
 
   // Tính giá dựa trên calculatePrice logic
   const calculatePrice = (booking: any, room: any) => {
@@ -110,6 +149,9 @@ const RevenueReport: React.FC = () => {
       title: "Mã đặt phòng",
       dataIndex: "id",
       key: "id",
+      onHeaderCell: () => ({
+        style: { backgroundColor: "#f5f7ff" },
+      }),
     },
     {
       title: "Khách hàng",
@@ -152,55 +194,88 @@ const RevenueReport: React.FC = () => {
       key: "status",
       render: (status: string) => {
         let color =
-          status === "COMPLETED"
+          status === "CONFIRMED"
             ? "green"
-            : status === "PENDING"
-            ? "orange"
-            : "red";
-        return <Tag color={color}>{status}</Tag>;
+            : status === "CANCELLED"
+            ? "red"
+            : "orange";
+        let statusText =
+          status === "CONFIRMED"
+            ? "Đã xác nhận"
+            : status === "CANCELLED"
+            ? "Đã hủy"
+            : "Đang xử lý";
+        return (
+          <Tag
+            color={color}
+            style={{ fontSize: "14px", backgroundColor: color, color: "white" }}
+          >
+            {statusText}
+          </Tag>
+        );
       },
     },
     {
       title: "Hành động",
       key: "action",
       render: (record: any) => (
-        <Button
-          type="primary"
-          onClick={() => {
-            setSelectedBooking(record);
-            setVisible(true);
-          }}
-        >
-          Xem chi tiết
-        </Button>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <Button
+            type="primary"
+            onClick={() => {
+              setSelectedBooking(record);
+              setVisible(true);
+            }}
+          >
+            Xem chi tiết
+          </Button>
+
+          {record.status === "PENDING" && (
+            <Popconfirm
+              title="Xác nhận check-in"
+              description="Bạn có chắc chắn muốn check-in cho đặt phòng này không?"
+              onConfirm={() => handleCheckIn(record.id)}
+              okText="Xác nhận"
+              cancelText="Hủy"
+            >
+              <Button
+                key="checkin"
+                type="primary"
+                style={{ backgroundColor: "#52c41a" }}
+                loading={confirmLoading && selectedBooking?.id === record.id}
+              >
+                Check-in
+              </Button>
+            </Popconfirm>
+          )}
+        </div>
       ),
     },
   ];
 
   return (
-    <div className="p-6">
+    <div style={{ padding: "20px" }}>
       <h1 className="text-2xl font-bold mb-4">Thống kê đặt phòng</h1>
 
       {/* Bộ lọc */}
-      <div className="mb-4 flex gap-4">
+      <div style={{ marginBottom: "20px", display: "flex", gap: "10px" }}>
         <Select
           placeholder="Lọc theo trạng thái"
           style={{ width: 200 }}
           allowClear
           onChange={(value) => setStatusFilter(value)}
         >
-          <Select.Option value="PENDING">PENDING</Select.Option>
-          <Select.Option value="CONFIRMED">CONFIRMED</Select.Option>
-          <Select.Option value="COMPLETED">COMPLETED</Select.Option>
-          <Select.Option value="CANCELLED">CANCELLED</Select.Option>
+          <Select.Option value="PENDING">Đang xử lý</Select.Option>
+          <Select.Option value="CONFIRMED">Đã xác nhận</Select.Option>
+          <Select.Option value="CANCELLED">Đã hủy</Select.Option>
         </Select>
-        <DatePicker
+        {/* <DatePicker
           placeholder="Lọc theo ngày check-in"
           format="DD/MM/YYYY"
           onChange={(date) =>
             setDateFilter(date ? moment(date.toDate()) : null)
           }
-        />
+        /> */}
       </div>
 
       {/* Bảng danh sách đặt phòng */}
@@ -221,7 +296,35 @@ const RevenueReport: React.FC = () => {
             setVisible(false);
             setSelectedBooking(null);
           }}
-          footer={null}
+          footer={[
+            <Button
+              key="close"
+              onClick={() => {
+                setVisible(false);
+                setSelectedBooking(null);
+              }}
+            >
+              Đóng
+            </Button>,
+            selectedBooking.status === "PENDING" && (
+              <Popconfirm
+                title="Xác nhận check-in"
+                description="Bạn có chắc chắn muốn check-in cho đặt phòng này không?"
+                onConfirm={() => handleCheckIn(selectedBooking.id)}
+                okText="Xác nhận"
+                cancelText="Hủy"
+              >
+                <Button
+                  key="checkin"
+                  type="primary"
+                  style={{ backgroundColor: "#52c41a" }}
+                  loading={confirmLoading}
+                >
+                  Check-in
+                </Button>
+              </Popconfirm>
+            ),
+          ]}
           width={800}
         >
           <Descriptions bordered column={1}>
@@ -332,11 +435,22 @@ const RevenueReport: React.FC = () => {
             </Descriptions.Item>
             <Descriptions.Item label="Trạng thái">
               <Tag
-                color={
-                  selectedBooking.status === "COMPLETED" ? "green" : "orange"
-                }
+                style={{
+                  fontSize: "14px",
+                  backgroundColor:
+                    selectedBooking.status === "CONFIRMED"
+                      ? "green"
+                      : selectedBooking.status === "CANCELLED"
+                      ? "red"
+                      : "orange",
+                  color: "white",
+                }}
               >
-                {selectedBooking.status}
+                {selectedBooking.status === "CONFIRMED"
+                  ? "Đã xác nhận"
+                  : selectedBooking.status === "CANCELLED"
+                  ? "Đã hủy"
+                  : "Đang xử lý"}
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="Lịch sử thay đổi">
