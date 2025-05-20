@@ -245,7 +245,7 @@ function UserManager() {
                       size={64}
                       src={
                         userDetails.user?.image_url ||
-                        "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                        "https://images.icon-icons.com/2483/PNG/512/user_icon_149851.png"
                       }
                       icon={<UserOutlined />}
                     />

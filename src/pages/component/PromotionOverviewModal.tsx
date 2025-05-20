@@ -110,7 +110,7 @@ const PromotionOverviewModal = ({
       width={700}
     >
       <Text>
-        Sau khi Quý vị nhập vào kích hoạt, khách trên Booking.com sẽ thấy được
+        Sau khi Quý vị nhập vào kích hoạt, khách trên MNMQ.com sẽ thấy được
         khuyến mãi này. Quý vị có thể chỉnh sửa bất cứ chi tiết nào ở đây hoặc
         trên trang "Khuyến mãi".
       </Text>

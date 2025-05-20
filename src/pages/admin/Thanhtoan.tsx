@@ -395,7 +395,10 @@ function Thanhtoan() {
             <Popconfirm
               title="Gửi báo cáo đối soát"
               description={`Bạn có chắc muốn gửi báo cáo đối soát đến chủ khách sạn "${record.name}"?`}
-              onConfirm={() => handleSendReconciliationReport(record.id)}
+              onConfirm={() => {
+                handleSendReconciliationReport(record.id);
+                return true; // This will close the popconfirm after confirmation
+              }}
               okText="Gửi"
               cancelText="Hủy"
             >
@@ -429,7 +432,7 @@ function Thanhtoan() {
           }}
         >
           <h1>Đối soát doanh thu</h1>
-          {activeTab === "2" && doanhThuThangStats && (
+          {activeTab === "1" && doanhThuThangStats && (
             <Popconfirm
               title="Gửi báo cáo đối soát cho tất cả"
               description={`Bạn có chắc muốn gửi báo cáo đối soát tháng ${selectedMonth}/${selectedYear} đến tất cả chủ khách sạn có doanh thu?`}
