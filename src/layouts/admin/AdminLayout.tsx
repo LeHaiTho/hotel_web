@@ -22,10 +22,12 @@ function AdminLayout(prop: Prop) {
   const handleClick = (e: any) => {
     if (e.key === "0_home") {
       navigate("/admin/home/trangchu-index");
-    } else if (e.key === "1_0") {
-      navigate("/admin/home/home-manager-user");
-    } else if (e.key === "1_1") {
-      navigate("/admin/home/home-index");
+      // } else if (e.key === "1_0") {
+      //   navigate("/admin/home/home-manager-user");
+      // } else if (e.key === "1_1") {
+      //   navigate("/admin/home/home-index");
+    } else if (e.key === "1") {
+      navigate("/admin/home/promotion");
     } else if (e.key === "2") {
       navigate("/admin/home/booking-all");
     } else if (e.key === "3") {
@@ -40,24 +42,24 @@ function AdminLayout(prop: Prop) {
   };
   const itemMenu = [
     { key: "0_home", label: "Trang chủ", icon: <HomeOutlined /> },
+    { key: "1", label: "Khuyến mãi" },
     {
-      key: "1",
+      key: "6",
       label: "Tài khoản",
       icon: <UserOutlined />,
       children: [
-        { key: "1_0", label: "Người dùng" },
-        { key: "1_1", label: "Quản lý" },
+        { key: "6_0", label: "Người dùng" },
+        { key: "6_1", label: "Quản lý" },
       ],
     },
-    { key: "2", label: "Lịch đặt phòng" },
     { key: "3", label: "Đối soát doanh thu" },
+    { key: "2", label: "Lịch đặt phòng" },
     { key: "4", label: "Khách sạn" },
     {
       key: "5",
       label: "Danh mục",
       children: [{ key: "5_0", label: "Loại khách sạn" }],
     },
-    // { key: "6", label: "Khuyến mãi" },
     // { key: "7", label: "Chanel Manager" },
     // { key: "8", label: "Báo cáo" },
     // { key: "9", label: "Kho hàng" },
