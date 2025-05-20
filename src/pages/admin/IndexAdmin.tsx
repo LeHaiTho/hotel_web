@@ -44,7 +44,7 @@ function IndexAdmin() {
   // Định nghĩa các thẻ thống kê
   const statCards = [
     {
-      title: "Đơn hàng",
+      title: "Lịch đặt phòng",
       value: dashboardStats.totalBookings.toLocaleString(),
       icon: images.butviet,
       bgColor: "#e3f5fe",

@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   AnalyzePopupMenu,
+  BookingRoomPopupMenu,
   CalendarPopupMenu,
   FinancePopupMenu,
   MailboxPopupMenu,
@@ -355,8 +356,8 @@ function HomeLayout(prop: Props) {
             </div>
             <PromotionalPopupMenu />
           </div>
-          <div
-            className="group-hover-home"
+          {/* <div
+            className="group-hover-home bookingroompopupmenu"
             style={{
               display: "flex",
               flexDirection: "column",
@@ -370,8 +371,10 @@ function HomeLayout(prop: Props) {
             </div>
             <div style={{ height: 30, padding: 0, margin: 0 }}>
               <span>Đặt phòng</span>
+              <DownOutlined style={{ fontSize: 10 }} />
             </div>
-          </div>
+            <BookingRoomPopupMenu />
+          </div> */}
           <div
             className="group-hover-home placetostay-menu"
             style={{
@@ -476,7 +479,7 @@ function HomeLayout(prop: Props) {
             </div>
             <div style={{ height: 30, padding: 0, margin: 0 }}>
               <span>
-                Tài chính <DownOutlined style={{ fontSize: 10 }} />
+                Lịch đặt phòng <DownOutlined style={{ fontSize: 10 }} />
               </span>
             </div>
             <FinancePopupMenu />

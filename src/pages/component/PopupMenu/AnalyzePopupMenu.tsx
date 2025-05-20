@@ -34,7 +34,7 @@ function AnalyzePopupMenu() {
         >
           Dashboard phân tích
         </li>
-        <li
+        {/* <li
           style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}
         >
           Báo cáo pace và đơn đặt <Tag color="#008009">Mới</Tag>
@@ -68,7 +68,7 @@ function AnalyzePopupMenu() {
           style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}
         >
           Dashboard hiệu suất
-        </li>
+        </li> */}
       </ul>
     </div>
   );

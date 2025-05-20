@@ -3,12 +3,20 @@ import dayjs from "dayjs";
 import { baseUrl } from "../../constants/constants";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const { Text } = Typography;
 
-const PromotionOverviewModal = ({ open, onClose, promotionD }: any) => {
+const PromotionOverviewModal = ({
+  open,
+  onClose,
+  promotionD,
+  onSuccess,
+}: any) => {
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
   console.log("promotionD", promotionD);
 
   const promotionDetails = [
@@ -37,6 +45,7 @@ const PromotionOverviewModal = ({ open, onClose, promotionD }: any) => {
       value: promotionD?.name,
     },
   ];
+
   const handleActivatePromotion = async () => {
     try {
       const promotionData = {
@@ -63,13 +72,23 @@ const PromotionOverviewModal = ({ open, onClose, promotionD }: any) => {
       if (res.status === 201) {
         message.success("Khuyến mãi đã được kích hoạt");
         onClose();
+
+        // Gọi callback onSuccess nếu được cung cấp
+        if (typeof onSuccess === "function") {
+          onSuccess();
+        }
+
+        // Chuyển hướng về trang danh sách khuyến mãi
+        navigate(`/manage/promotion-list?token=${token}`);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Lỗi khi kích hoạt khuyến mãi:", error);
+      message.error("Có lỗi xảy ra khi kích hoạt khuyến mãi");
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <Modal
       title="Tổng quan về Ưu Đãi Mùa Du Lịch"
@@ -93,7 +112,7 @@ const PromotionOverviewModal = ({ open, onClose, promotionD }: any) => {
       <Text>
         Sau khi Quý vị nhập vào kích hoạt, khách trên Booking.com sẽ thấy được
         khuyến mãi này. Quý vị có thể chỉnh sửa bất cứ chi tiết nào ở đây hoặc
-        trên trang “Khuyến mãi”.
+        trên trang "Khuyến mãi".
       </Text>
 
       <Divider />

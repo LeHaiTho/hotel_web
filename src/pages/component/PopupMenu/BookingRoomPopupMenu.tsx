@@ -1,17 +1,16 @@
-import { Tag } from "antd";
 import { useNavigate } from "react-router-dom";
 
-function FinancePopupMenu() {
+function BookingRoomPopupMenu() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   return (
     <div
-      className="financepopupmenu"
+      className="bookingroompopupmenu"
       style={{
         marginTop: 5,
         position: "absolute",
         top: "100%",
-        right: 0,
+        left: 0,
         color: "#000",
         backgroundColor: "#fff",
         display: "none",
@@ -28,13 +27,13 @@ function FinancePopupMenu() {
       >
         <li
           style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}
-          onClick={() => navigate(`/manage/revenue-report?token=${token}`)}
+          onClick={() => navigate("/manage/booking-history?token=" + token)}
         >
-          Lịch đặt phòng
+          Quản lý lịch sử đặt phòng
         </li>
       </ul>
     </div>
   );
 }
 
-export default FinancePopupMenu;
+export default BookingRoomPopupMenu;

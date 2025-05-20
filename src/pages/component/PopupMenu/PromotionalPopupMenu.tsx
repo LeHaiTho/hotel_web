@@ -37,12 +37,12 @@ function PromotionalPopupMenu() {
         >
           Chọn khuyến mãi mới
         </li>
-        <li
+        {/* <li
           onClick={() => navigate(`/manage/revenue-report?token=${token}`)}
           style={{ padding: "10px 10px", lineHeight: "1.4", fontSize: "14px" }}
         >
           Khuyến mãi đang chạy
-        </li>
+        </li> */}
       </ul>
     </div>
   );

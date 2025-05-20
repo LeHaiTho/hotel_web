@@ -7,6 +7,7 @@ import ReviewPopupMenu from "./ReviewPopupMenu";
 import FinancePopupMenu from "./FinancePopupMenu";
 import AnalyzePopupMenu from "./AnalyzePopupMenu";
 import PromotionalPopupMenu from "./PromotionalPopupMenu";
+import BookingRoomPopupMenu from "./BookingRoomPopupMenu";
 export {
   CalendarPopupMenu,
   MailboxPopupMenu,
@@ -16,4 +17,5 @@ export {
   ReviewPopupMenu,
   FinancePopupMenu,
   AnalyzePopupMenu,
+  BookingRoomPopupMenu,
 };

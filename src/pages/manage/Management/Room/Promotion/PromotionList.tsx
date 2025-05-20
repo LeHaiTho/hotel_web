@@ -26,49 +26,61 @@ const PromotionList: React.FC = () => {
   const [promotions, setPromotions] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const fetchPromotions = async () => {
+    if (!hotel?.id || !token) {
+      setPromotions([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/promotion/hotel/${hotel.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const tableData = res.data.map((promo: any) => ({
+        id: promo.name,
+        name: promo.name,
+        discount: promo.discount,
+        bookingPeriod:
+          promo.apply_period.includes("Invalid date") || !promo.apply_period
+            ? "Không xác định"
+            : promo.apply_period,
+        stayPeriod:
+          promo.apply_period.includes("Invalid date") || !promo.apply_period
+            ? "Không xác định"
+            : promo.apply_period,
+        createdDate: dayjs().format("DD MMMM YYYY"), // Giả lập, cần API trả createdAt
+        roomTypes: promo.details.map((d: any) => d.room_type),
+        rateTypes: ["Standard"], // Giả lập, cần logic rateTypes
+        total_rooms: promo.total_rooms,
+        details: promo.details,
+      }));
+      setPromotions(tableData);
+    } catch (error) {
+      console.error(error);
+      setPromotions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchPromotions = async () => {
-      if (!hotel?.id || !token) {
-        setPromotions([]);
-        setLoading(false);
-        return;
-      }
-      setLoading(true);
-      try {
-        const res = await axios.get(
-          `http://localhost:5000/promotion/hotel/${hotel.id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const tableData = res.data.map((promo: any) => ({
-          id: promo.name,
-          name: promo.name,
-          discount: promo.discount,
-          bookingPeriod:
-            promo.apply_period.includes("Invalid date") || !promo.apply_period
-              ? "Không xác định"
-              : promo.apply_period,
-          stayPeriod:
-            promo.apply_period.includes("Invalid date") || !promo.apply_period
-              ? "Không xác định"
-              : promo.apply_period,
-          createdDate: dayjs().format("DD MMMM YYYY"), // Giả lập, cần API trả createdAt
-          roomTypes: promo.details.map((d: any) => d.room_type),
-          rateTypes: ["Standard"], // Giả lập, cần logic rateTypes
-          total_rooms: promo.total_rooms,
-          details: promo.details,
-        }));
-        setPromotions(tableData);
-      } catch (error) {
-        console.error(error);
-        setPromotions([]);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPromotions();
   }, [hotel?.id, token]);
+
+  // Thêm hàm xử lý khi quay lại từ trang thêm khuyến mãi
+  useEffect(() => {
+    // Kiểm tra xem có query param 'refresh' không
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.get("refresh") === "true") {
+      fetchPromotions();
+      // Xóa query param sau khi đã tải lại
+      navigate("/manage/promotion-list", { replace: true });
+    }
+  }, [navigate]);
 
   const columns = [
     {

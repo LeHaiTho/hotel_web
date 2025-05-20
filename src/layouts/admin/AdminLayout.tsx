@@ -22,8 +22,8 @@ function AdminLayout(prop: Prop) {
   const handleClick = (e: any) => {
     if (e.key === "0_home") {
       navigate("/admin/home/trangchu-index");
-      // } else if (e.key === "1_0") {
-      //   navigate("/admin/home/home-manager-user");
+    } else if (e.key === "6_0") {
+      navigate("/admin/home/home-manager-user");
       // } else if (e.key === "1_1") {
       //   navigate("/admin/home/home-index");
     } else if (e.key === "1") {
@@ -49,7 +49,7 @@ function AdminLayout(prop: Prop) {
       icon: <UserOutlined />,
       children: [
         { key: "6_0", label: "Người dùng" },
-        { key: "6_1", label: "Quản lý" },
+        // { key: "6_1", label: "Quản lý" },
       ],
     },
     { key: "3", label: "Đối soát doanh thu" },
